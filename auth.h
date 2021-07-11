@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <string.h>
 
-// Defina o nome do usuário admin aqui
+// Defina o nome do usuario admin aqui
 #define AUTH "MASTER"
 
 typedef struct User User;
@@ -22,7 +22,7 @@ struct User {
  */
 int auth(User *user) {
     if(strncmp(user->nome, AUTH, 6) == 0 &&
-       strlen(user->nome) == (strlen(AUTH) + 1)) // +1 por causa do '\0' no final
+       strlen(user->nome) == (strlen(AUTH)))
        return 0;
     return 1;
 }

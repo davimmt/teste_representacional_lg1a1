@@ -6,43 +6,48 @@
 /**
  * Variables header
  */
-int *answers[20], sum_visual, sum_cinestegico, sum_auditivo, sum_digital, sum_answers[4], bigger_sum[1];
-char *profile_type[1], *final_result[1];
+int *answers[20], sum_visual, sum_cinestegico, sum_auditivo, sum_digital, sum_answers[4], bigger_sum;
+char profile_type[20], final_result[20];
 const char *profiles[20] = {"CINESTEGICO", "AUDITIVO", "VISUAL", "DIGITAL",
-                           "AUDITIVO", "VISUAL", "DIGITAL", "CINESTEGICO",
-                           "VISUAL", "CINESTEGICO", "DIGITAL", "AUDITIVO",
-                           "AUDITIVO", "DIGITAL", "CINESTEGICO", "VISUAL",
-                           "AUDITIVO", "DIGITAL", "CINESTEGICO", "VISUAL"},
-            *profile_types[4] = {"CINESTEGICO", "AUDITIVO", "VISUAL", "DIGITAL"};
+	                       "AUDITIVO", "VISUAL", "DIGITAL", "CINESTEGICO",
+	                       "VISUAL", "CINESTEGICO", "DIGITAL", "AUDITIVO",
+	                       "AUDITIVO", "DIGITAL", "CINESTEGICO", "VISUAL",
+	                       "AUDITIVO", "DIGITAL", "CINESTEGICO", "VISUAL"},
+    		*profile_types[4] = {"CINESTEGICO", "AUDITIVO", "VISUAL", "DIGITAL"};
 
 /**
  * Functions header
  */
-int *getAnswers(int *answers, int index);
+int getAnswers(int *answers, int index);
 char *getFinalResult(int *sum_answers);
 int writeResultFile(int *sum_answers, char *user_nome, char *user_prontuario);
 int sum(int *answers, char *profile_type);
+int questao_1();
+int questao_2();
+int questao_3();
+int questao_4();
+int questao_5();
 
 int realizar_teste(char *user_nome, char *user_prontuario) {
-    questao_1(answers);
-    questao_2(answers);
-    questao_3(answers);
-    questao_4(answers);
-    questao_5(answers);
+    questao_1();
+    questao_2();
+    questao_3();
+    questao_4();
+    questao_5();
     system("cls");
-
+	
     sum_answers[0] = sum(answers, profile_types[0]);
     sum_answers[1] = sum(answers, profile_types[1]);
     sum_answers[2] = sum(answers, profile_types[2]);
     sum_answers[3] = sum(answers, profile_types[3]);
-
+	
     writeResultFile(sum_answers, user_nome, user_prontuario);
     printf("Arquivo resultado gerado com sucesso!\n\n");
 
     return 0;
 };
 
-int *getAnswers(int *answers, int index) {
+int getAnswers(int *answers, int index) {
     printf("[a]: ");
     scanf("%i", &answers[index]);
 
@@ -55,36 +60,30 @@ int *getAnswers(int *answers, int index) {
     printf("[d]: ");
     scanf("%i", &answers[index + 3]);
 
-    return *answers;
+    return answers;
 }
 
-char *getFinalResult(int *sum_answers) {
-    // Definir a maior porcentagem para o primeiro elemento
-    bigger_sum[0] = sum_answers[0];
-
-    // Definir o tipo de perfil para o primeiro elemento
-    profile_type[0] = profile_types[0];
-
-    for (int i = 0; i < 4; i++) {
-        // Trocar a maior porcentagem e o tipo de perfil, caso superados
-        if (bigger_sum[0] < sum_answers[i]) {
-            bigger_sum[0] = sum_answers[i];
-            profile_type[0] = profile_types[i];
+int sum(int *answers, char *profile_type) {
+    int sum, i;
+    sum = 0;
+    for(i = 0; i < 20; i++) {
+        if (strncmp(profiles[i], profile_type, 6) == 0) {
+            sum += answers[i];
         }
     }
 
-    return profile_type[0];
+    return sum;
 }
 
 int writeResultFile(int *sum_answers, char *user_nome, char *user_prontuario) {
     char file_name[64] = {};
     FILE * profile;
-
-    // Trocar espaços por underscores, remover quebra de linha do fgets()
-    for(int i = 0; i < strlen(user_nome); i++) {  
-        if(user_nome[i] == ' ') user_nome[i] = '_';
-        if(user_nome[i] == '\n') user_nome[i] = '\0';
-    }
+    
+    int i;
+    for(i = 0; i < strlen(user_nome); i++) {
+    	if(user_nome[i] == ' ') user_nome[i] = '_';
+    	if(user_nome[i] == '\n') user_nome[i] = '\0'; // fgets()
+	}
 
     strncat(file_name, "RESULTADO_", 10);
     strncat(file_name, user_nome, 20);
@@ -92,12 +91,12 @@ int writeResultFile(int *sum_answers, char *user_nome, char *user_prontuario) {
     strncat(file_name, user_prontuario, 20);
     strncat(file_name, ".TXT", 4);
 
-    // Trocar underscores por espaços 
-    for(int i = 0; i < strlen(user_nome); i++) {  
-        if(user_nome[i] == '_') user_nome[i] = ' ';
-    }
+    for(i = 0; i < strlen(user_nome); i++) {
+    	if(user_nome[i] == '_') user_nome[i] = ' ';
+	}
 
-    final_result[0] = getFinalResult(sum_answers);
+    strcpy(final_result, getFinalResult(sum_answers));
+
     profile = fopen(file_name , "a");
         fprintf(profile, "========================================== PERFIL REPRESENTACIONAL DE %s ================================================================", user_nome);
         fprintf(profile, "\n                   %d%% %s            %d%% %s            %d%% %s               %d%% %s", 
@@ -111,26 +110,33 @@ int writeResultFile(int *sum_answers, char *user_nome, char *user_prontuario) {
         fprintf(profile, "\nAs cinestesicas aprendem melhor por meio das sensacoes tateis, como o tato, a temperatura, a umidade, as sensacoes internas e as emocoes.");
         fprintf(profile, "\nJa as pessoas visuais aprendem melhor quando se valendo da visao.");
         fprintf(profile, "\n=============================================================================================================================================");
-        fprintf(profile, "\nSeu perfil: %s", final_result[0]);
+        fprintf(profile, "\nSeu perfil: %s", final_result);
         fprintf(profile, "\n=============================================================================================================================================\n\n");
     fclose(profile);
 
     return 0;
 }
 
-int sum(int *answers, char *profile_type) {
-    int sum;
-    sum = 0;
-    for(int i = 0; i < 20; i++) {
-        if (strncmp(profiles[i], profile_type, 6) == 0) {
-            sum += answers[i];
+char *getFinalResult(int *sum_answers) {
+	int i;
+	// Definir o tipo de perfil para o primeiro elemento
+    strcpy(profile_type, "CINESTEGICO");
+    
+    // Definir a maior porcentagem para o minimo possivel
+    bigger_sum = 1;
+
+    for (i = 0; i < 4; i++) {
+        // Trocar a maior porcentagem e o tipo de perfil, caso superados
+        if (bigger_sum < sum_answers[i]) {
+            bigger_sum = sum_answers[i];
+            strcpy(profile_type, profile_types[i]);
         }
     }
 
-    return sum;
+    return profile_type;
 }
 
-int about(char *user_nome, char *user_prontuario) {
+int about(char user_nome, char user_prontuario) {
     system("cls");
 
     FILE * about;
@@ -160,7 +166,7 @@ int teste_header() {
     return 0;
 }
 
-int questao_1(int *answers) {
+int questao_1() {
     teste_header();
     printf("\n1. Eu tomo decisoes importantes baseado em:\n\
             a) intuicao.\n\
@@ -172,7 +178,7 @@ int questao_1(int *answers) {
     return 0;
 }
 
-int questao_2(int *answers) {
+int questao_2() {
     teste_header();
     printf("\n2. Durante uma discussao eu sou mais influenciado por:\n\
             a) o tom da voz da outra pessoa.\n\
@@ -184,7 +190,7 @@ int questao_2(int *answers) {
     return 0;
 }
 
-int questao_3(int *answers) {
+int questao_3() {
     teste_header();
     printf("\n3. Eu comunico mais facilmente o que se passa comigo:\n\
             a) do modo como me visto e aparento.\n\
@@ -196,7 +202,7 @@ int questao_3(int *answers) {
     return 0;
 }
 
-int questao_4(int *answers) {
+int questao_4() {
     teste_header();
     printf("\n4. Muito facil para mim:\n\
             a) achar o volume e a sintonia ideais num sistema de som.\n\
@@ -208,7 +214,7 @@ int questao_4(int *answers) {
     return 0;
 }
 
-int questao_5(int *answers) {
+int questao_5() {
     teste_header();
     printf("\n5. Eu me percebo assim:\n\
             a) se estou muito em sintonia com os sons dos ambientes.\n\

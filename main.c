@@ -5,24 +5,21 @@
 #include "questionario.h"
 #include "teste.h"
 
-#define MAX_NAME_SZ 256
+#define MAX_NAME_SZ 64
 
-int main() {
-    char *user_credentials[64];
+void main() {
+    char user_credentials[2][64];
 
     printf("NOME: ");
-    fgets(&user_credentials[0], MAX_NAME_SZ, stdin);
+    fflush(stdin); fgets(&user_credentials[0], MAX_NAME_SZ, stdin);
 
     printf("PRONTUARIO: ");
-    scanf("%s", &user_credentials[54]);
+    fflush(stdin); scanf("%s", &user_credentials[1]);
 
-    User user = __User__(&user_credentials[0], &user_credentials[54]);
-    
+    User user = __User__(user_credentials[0], user_credentials[1]);
+
     if(user.auth(&user) == 0) menu(user.nome, user.prontuario);
     else realizar_teste(user.nome, user.prontuario);
-
-    system("pause");
-    return 0;
 };
 
 int menu(char *user_nome, char *user_prontuario) {
