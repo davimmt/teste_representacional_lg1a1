@@ -23,35 +23,32 @@ int getAnswers(int *answers, int index);
 char *getFinalResult(float *sum_answers);
 int writeResultFile(float *sum_answers, char *user_nome, char *user_prontuario);
 int sum(int *answers, char *profile_type);
-int questao_1();
-int questao_2();
-int questao_3();
-int questao_4();
-int questao_5();
 
-int realizar_teste(char *user_nome, char *user_prontuario) {
-    questao_1();
-    questao_2();
-    questao_3();
-    questao_4();
-    questao_5();
-    system("cls");
-	
+void realizar_teste(char *user_nome, char *user_prontuario) {
+	int i;
+	for(i = 0; i < 5; i++) {
+		teste_header();
+		printf ("\n%d. %s:\n   a) %s.\n   b) %s.\n   c) %s.\n   d) %s.",
+		questionario[i].NroFrase, questionario[i].Frase, questionario[i].item_1, questionario[i].item_2, questionario[i].item_3, questionario[i].item_4);
+		if (i == 0) getAnswers(answers, 0);
+		if (i == 1) getAnswers(answers, 4);
+		if (i == 2) getAnswers(answers, 8);
+		if (i == 3) getAnswers(answers, 12);
+		if (i == 4) getAnswers(answers, 16);
+  	}
+
     sum_answers[0] = sum(answers, profile_types[0]);
     sum_answers[1] = sum(answers, profile_types[1]);
     sum_answers[2] = sum(answers, profile_types[2]);
     sum_answers[3] = sum(answers, profile_types[3]);
 	
     writeResultFile(sum_answers, user_nome, user_prontuario);
-    printf("Arquivo resultado gerado com sucesso!\n\n");
-	system("pause");
-	
-    return 0;
+	menu(user_nome, user_prontuario);
 };
 
 int getAnswers(int *answers, int index) {
 	while (1) {
-    	printf("[a]: ");
+    	printf("\n\n[a]: ");
     	scanf("%i", &answers[index]);
 
     	if (answers[index] >= 1 && answers[index] <= 4) break;
@@ -131,7 +128,7 @@ int writeResultFile(float *sum_answers, char *user_nome, char *user_prontuario) 
 
     strcpy(final_result, getFinalResult(sum_answers));
 	
-    profile = fopen(file_name , "a");
+    profile = fopen(file_name , "w");
         fprintf(profile, "========================================== PERFIL REPRESENTACIONAL DE %s ================================================================", user_nome);
         fprintf(profile, "\n                   %.0f%% %s            %.0f%% %s            %.0f%% %s               %.0f%% %s", 
         ((sum_answers[0] / 50) * 100), profile_types[0],
@@ -147,6 +144,9 @@ int writeResultFile(float *sum_answers, char *user_nome, char *user_prontuario) 
         fprintf(profile, "\nSeu perfil: %s", final_result);
         fprintf(profile, "\n=============================================================================================================================================\n\n");
     fclose(profile);
+    
+    system("cls"); printf("Arquivo resultado gerado com sucesso!\n\n"); sleep(1);
+    system(file_name);
     
     return 0;
 }
@@ -172,94 +172,4 @@ char *getFinalResult(float *sum_answers) {
     }
 
     return profile_type;
-}
-
-int about(char user_nome, char user_prontuario) {
-    system("cls");
-
-    FILE * about;
-    about = fopen("REFERENCIAL_TEORICO.TXT", "r");
-        char about_txt;
-        do {
-            about_txt = getc(about);
-            printf("%c", about_txt);
-        } while(about_txt != EOF);
-	fclose(about);
-    printf("\n\n");
-
-    system("pause");
-    menu(user_nome, user_prontuario);
-
-    return 0;
-}
-
-int teste_header() {
-    system("cls");
-    printf("Nas frases a seguir, pontue com:\n\
-            4 a que melhor descreve voce;\n\
-            3 a proxima melhor descricao;\n\
-            2 a proxima melhor; e\n\
-            1 aquela que menos descreve voce.\n");
-
-    return 0;
-}
-
-int questao_1() {
-    teste_header();
-    printf("\n1. Eu tomo decisoes importantes baseado em:\n\
-            a) intuicao.\n\
-            b) o que me soa melhor.\n\
-            c) o que me parece melhor.\n\
-            d) um estudo preciso e minucioso do assunto.\n\n");
-    getAnswers(answers, 0);
-
-    return 0;
-}
-
-int questao_2() {
-    teste_header();
-    printf("\n2. Durante uma discussao eu sou mais influenciado por:\n\
-            a) o tom da voz da outra pessoa.\n\
-            b) se eu posso ou nao ver o argumento da outra pessoa.\n\
-            c) a logica do argumento da outra pessoa.\n\
-            d) se eu entro em contato ou nao com os sentimentos reais do outro.\n\n");
-    getAnswers(answers, 4);
-
-    return 0;
-}
-
-int questao_3() {
-    teste_header();
-    printf("\n3. Eu comunico mais facilmente o que se passa comigo:\n\
-            a) do modo como me visto e aparento.\n\
-            b) pelos sentimentos que compartilho.\n\
-            c) pelas palavras que escolho.\n\
-            d) pelo tom da minha voz.\n\n");
-    getAnswers(answers, 8);
-
-    return 0;
-}
-
-int questao_4() {
-    teste_header();
-    printf("\n4. Muito facil para mim:\n\
-            a) achar o volume e a sintonia ideais num sistema de som.\n\
-            b) selecionar o ponto mais relevante relativo a um assunto interessante.\n\
-            c) escolher os moveis mais confortaveis.\n\
-            d) escolher as combinacoes de cores mais ricas e atraentes.\n\n");
-    getAnswers(answers, 12);
-
-    return 0;
-}
-
-int questao_5() {
-    teste_header();
-    printf("\n5. Eu me percebo assim:\n\
-            a) se estou muito em sintonia com os sons dos ambientes.\n\
-            b) se sou muito capaz de raciocinar com fatos e dados novos.\n\
-            c) eu sou muito sensivel ao jeito como a roupa veste o meu corpo.\n\
-            d) eu respondo fortemente ao coloramento e ao visual de uma sala.\n\n");
-    getAnswers(answers, 16);
-
-    return 0;
 }

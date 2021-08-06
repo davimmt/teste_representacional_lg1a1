@@ -23,14 +23,14 @@ void main() {
     fflush(stdin); scanf("%s", &user_credentials[1]);
     // All to upper
     for(i = 0; i < strlen(user_credentials[1]); i++) user_credentials[1][i] = toupper(user_credentials[1][i]);
-
-    User user = __User__(user_credentials[0], user_credentials[1]);
-
-    if(user.auth(&user) == 0) menu(user.nome, user.prontuario);
-    else realizar_teste(user.nome, user.prontuario);
+    
+    menu(user_credentials[0], user_credentials[1]);
 };
 
 int menu(char *user_nome, char *user_prontuario) {
+	User user = __User__(user_nome, user_prontuario);
+    if(user.auth(&user) != 0) realizar_teste(user.nome, user.prontuario);
+    
     system("cls");
     char menu_choice[1];
 

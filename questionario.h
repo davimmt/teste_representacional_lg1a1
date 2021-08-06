@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <conio.h>
+#include <locale.h>
 
 typedef struct Questionario Questionario;
 struct Questionario {
@@ -68,3 +69,29 @@ void visualizar_questionario() {
     system(ARQUIVOTXT);
     menu();
 };
+
+void about(char user_nome, char user_prontuario) {
+    system("cls");
+	setlocale (LC_ALL, "");
+    FILE * about;
+    about = fopen("REFERENCIAL_TEORICO.TXT", "r");
+        char about_txt;
+        do {
+            about_txt = getc(about);
+            printf("%c", about_txt);
+        } while(about_txt != EOF);
+	fclose(about);
+    printf("\n\n");
+
+    system("pause");
+    menu(user_nome, user_prontuario);
+}
+
+void teste_header() {
+    system("cls");
+    printf("Nas frases a seguir, pontue com:\n\
+            4 a que melhor descreve voce;\n\
+            3 a proxima melhor descricao;\n\
+            2 a proxima melhor; e\n\
+            1 aquela que menos descreve voce.\n");
+}
