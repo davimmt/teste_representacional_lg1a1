@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
 #include "auth.h"
 #include "questionario.h"
 #include "teste.h"
@@ -9,12 +10,19 @@
 
 void main() {
     char user_credentials[2][64];
-
+    int i;
+	
     printf("NOME: ");
     fflush(stdin); fgets(&user_credentials[0], MAX_NAME_SZ, stdin);
+    // Remove fgets() jump-line at the end
+    user_credentials[0][strlen(user_credentials[0])-1] = '\0';
+    // All to upper
+    for(i = 0; i < strlen(user_credentials[0]); i++) user_credentials[0][i] = toupper(user_credentials[0][i]);
 
     printf("PRONTUARIO: ");
     fflush(stdin); scanf("%s", &user_credentials[1]);
+    // All to upper
+    for(i = 0; i < strlen(user_credentials[1]); i++) user_credentials[1][i] = toupper(user_credentials[1][i]);
 
     User user = __User__(user_credentials[0], user_credentials[1]);
 

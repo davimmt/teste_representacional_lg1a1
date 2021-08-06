@@ -21,8 +21,7 @@ struct User {
  * Functions
  */
 int auth(User *user) {
-    if(strncmp(user->nome, AUTH, 6) == 0 &&
-       strlen(user->nome) == (strlen(AUTH)))
+    if(strcasecmp(user->nome, AUTH) == 0)
        return 0;
     return 1;
 }

@@ -6,7 +6,8 @@
 /**
  * Variables header
  */
-int *answers[20], sum_visual, sum_cinestegico, sum_auditivo, sum_digital, sum_answers[4], bigger_sum;
+int *answers[20], sum_visual, sum_cinestegico, sum_auditivo, sum_digital, bigger_sum;
+float sum_answers[4];
 char profile_type[20], final_result[20];
 const char *profiles[20] = {"CINESTEGICO", "AUDITIVO", "VISUAL", "DIGITAL",
 	                       "AUDITIVO", "VISUAL", "DIGITAL", "CINESTEGICO",
@@ -19,8 +20,8 @@ const char *profiles[20] = {"CINESTEGICO", "AUDITIVO", "VISUAL", "DIGITAL",
  * Functions header
  */
 int getAnswers(int *answers, int index);
-char *getFinalResult(int *sum_answers);
-int writeResultFile(int *sum_answers, char *user_nome, char *user_prontuario);
+char *getFinalResult(float *sum_answers);
+int writeResultFile(float *sum_answers, char *user_nome, char *user_prontuario);
 int sum(int *answers, char *profile_type);
 int questao_1();
 int questao_2();
@@ -43,23 +44,59 @@ int realizar_teste(char *user_nome, char *user_prontuario) {
 	
     writeResultFile(sum_answers, user_nome, user_prontuario);
     printf("Arquivo resultado gerado com sucesso!\n\n");
-
+	system("pause");
+	
     return 0;
 };
 
 int getAnswers(int *answers, int index) {
-    printf("[a]: ");
-    scanf("%i", &answers[index]);
+	while (1) {
+    	printf("[a]: ");
+    	scanf("%i", &answers[index]);
 
-    printf("[b]: ");
-    scanf("%i", &answers[index + 1]);
+    	if (answers[index] >= 1 && answers[index] <= 4) break;
+    	else printf("\nSelecione um valor entre 1 e 4.\n\n");
+	}
+	
+	while (1) {
+    	printf("[b]: ");
+    	scanf("%i", &answers[index + 1]);
 
-    printf("[c]: ");
-    scanf("%i", &answers[index + 2]);
+    	if (!(answers[index + 1] >= 1 && answers[index + 1] <= 4)) {
+    		printf("\nSelecione um valor entre 1 e 4.\n\n");
+    		continue;
+		}
 
-    printf("[d]: ");
-    scanf("%i", &answers[index + 3]);
+    	if (answers[index + 1] == answers[index]) printf("\nSelecione um valor nao escolhido.\n\n");
+    	else break;
+	}
 
+    while (1) {
+    	printf("[c]: ");
+    	scanf("%i", &answers[index + 2]);
+
+    	if (!(answers[index + 2] >= 1 && answers[index + 2] <= 4)) {
+    		printf("\nSelecione um valor entre 1 e 4.\n\n");
+    		continue;
+		}
+
+    	if (answers[index + 2] == answers[index] || answers[index + 2] == answers[index + 1]) printf("\nSelecione um valor nao escolhido.\n\n");
+    	else break;
+	}
+	
+	while (1) {
+    	printf("[d]: ");
+    	scanf("%i", &answers[index + 3]);
+
+    	if (!(answers[index + 3] >= 1 && answers[index + 3] <= 4)) {
+    		printf("\nSelecione um valor entre 1 e 4.\n\n");
+    		continue;
+		}
+
+    	if (answers[index + 3] == answers[index] || answers[index + 3] == answers[index + 1] || answers[index + 3] == answers[index + 2]) printf("\nSelecione um valor nao escolhido.\n\n");
+    	else break;
+	}
+	
     return answers;
 }
 
@@ -75,15 +112,12 @@ int sum(int *answers, char *profile_type) {
     return sum;
 }
 
-int writeResultFile(int *sum_answers, char *user_nome, char *user_prontuario) {
+int writeResultFile(float *sum_answers, char *user_nome, char *user_prontuario) {
     char file_name[64] = {};
     FILE * profile;
     
     int i;
-    for(i = 0; i < strlen(user_nome); i++) {
-    	if(user_nome[i] == ' ') user_nome[i] = '_';
-    	if(user_nome[i] == '\n') user_nome[i] = '\0'; // fgets()
-	}
+    for(i = 0; i < strlen(user_nome); i++) if(user_nome[i] == ' ') user_nome[i] = '_';
 
     strncat(file_name, "RESULTADO_", 10);
     strncat(file_name, user_nome, 20);
@@ -96,14 +130,14 @@ int writeResultFile(int *sum_answers, char *user_nome, char *user_prontuario) {
 	}
 
     strcpy(final_result, getFinalResult(sum_answers));
-
+	
     profile = fopen(file_name , "a");
         fprintf(profile, "========================================== PERFIL REPRESENTACIONAL DE %s ================================================================", user_nome);
-        fprintf(profile, "\n                   %d%% %s            %d%% %s            %d%% %s               %d%% %s", 
-            sum_answers[0], profile_types[0],
-            sum_answers[1], profile_types[1],
-            sum_answers[2], profile_types[2],
-            sum_answers[3], profile_types[3]);
+        fprintf(profile, "\n                   %.0f%% %s            %.0f%% %s            %.0f%% %s               %.0f%% %s", 
+        ((sum_answers[0] / 50) * 100), profile_types[0],
+        ((sum_answers[1] / 50) * 100), profile_types[1],
+        ((sum_answers[2] / 50) * 100), profile_types[2],
+        ((sum_answers[3] / 50) * 100), profile_types[3]);
         fprintf(profile, "\n=============================================================================================================================================");
         fprintf(profile, "\nAlgumas pessoas captam melhor as mensagens do mundo exterior atraves da audicao, sao as pessoas chamadas auditivas.");
         fprintf(profile, "\nOutras pessoas sentem necessidade de perguntar muito, necessitem de muitas informacoes e fatos. Estas sao as digitais.");
@@ -113,12 +147,13 @@ int writeResultFile(int *sum_answers, char *user_nome, char *user_prontuario) {
         fprintf(profile, "\nSeu perfil: %s", final_result);
         fprintf(profile, "\n=============================================================================================================================================\n\n");
     fclose(profile);
-
+    
     return 0;
 }
 
-char *getFinalResult(int *sum_answers) {
+char *getFinalResult(float *sum_answers) {
 	int i;
+	char separator[3] = " & ";
 	// Definir o tipo de perfil para o primeiro elemento
     strcpy(profile_type, "CINESTEGICO");
     
@@ -130,6 +165,9 @@ char *getFinalResult(int *sum_answers) {
         if (bigger_sum < sum_answers[i]) {
             bigger_sum = sum_answers[i];
             strcpy(profile_type, profile_types[i]);
+        }
+        else if (bigger_sum == sum_answers[i] && strncmp(profile_type, profile_types[i], 1)) { // Caso de dois valores iguais
+            strcat(profile_type, strcat(separator, profile_types[i]));
         }
     }
 
