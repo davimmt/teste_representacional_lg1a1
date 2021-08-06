@@ -24,7 +24,7 @@ Questionario questionario[5] = {
 	{5, "Eu me percebo assim", 0, "se estou muito em sintonia com os sons dos ambientes", 0, "se sou muito capaz de raciocinar com fatos e dados novos", 0, "eu sou muito sensivel ao jeito como a roupa veste o meu corpo", 0, "eu respondo fortemente ao coloramento e ao visual de uma sala"}
 };
 
-void cadastrar_questionario() {
+void cadastrar_questionario(char *user_nome, char *user_prontuario) {
     int i;
 	char ARQUIVODAT[50] = "TESTE_SISTEMA_REPRESENTACIONAL.DAT";
 	
@@ -44,10 +44,10 @@ void cadastrar_questionario() {
 	}
 	fclose(Arq);
 	system("cls"); printf("\nArquivo gerado!"); sleep(1);
-	menu();
+	menu(user_nome, user_prontuario);
 };
 
-void visualizar_questionario() {
+void visualizar_questionario(char *user_nome, char *user_prontuario) {
 	char ARQUIVODAT[50] = "TESTE_SISTEMA_REPRESENTACIONAL.DAT", ARQUIVOTXT[50] = "QUESTIONARIO_1.TXT";
 	FILE * input;
 	FILE * visualizar;
@@ -67,10 +67,10 @@ void visualizar_questionario() {
 	    fprintf(visualizar ,"\n"); for(i = 0; i < 350; i++) fprintf(visualizar ,"=");
     fclose(input); fclose(visualizar);
     system(ARQUIVOTXT);
-    menu();
+    menu(user_nome, user_prontuario);
 };
 
-void about(char user_nome, char user_prontuario) {
+void about(char *user_nome, char *user_prontuario) {
     system("cls");
 	setlocale (LC_ALL, "");
     FILE * about;
@@ -82,7 +82,6 @@ void about(char user_nome, char user_prontuario) {
         } while(about_txt != EOF);
 	fclose(about);
     printf("\n\n");
-
     system("pause");
     menu(user_nome, user_prontuario);
 }

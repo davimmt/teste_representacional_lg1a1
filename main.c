@@ -47,8 +47,8 @@ int menu(char *user_nome, char *user_prontuario) {
     printf("\nEscolha: ");
     scanf("%s", menu_choice);
 
-    if(strncmp(menu_choice, "1", 1) == 0) cadastrar_questionario();
-    else if(strncmp(menu_choice, "2", 1) == 0) visualizar_questionario();
+    if(strncmp(menu_choice, "1", 1) == 0) cadastrar_questionario(user_nome, user_prontuario);
+    else if(strncmp(menu_choice, "2", 1) == 0) visualizar_questionario(user_nome, user_prontuario);
     else if(strncmp(menu_choice, "3", 1) == 0) realizar_teste(user_nome, user_prontuario);
     else if(strncmp(menu_choice, "4", 1) == 0) about(user_nome, user_prontuario);
     else if(strncmp(menu_choice, "F", 1) == 0 ||
